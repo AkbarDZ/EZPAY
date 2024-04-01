@@ -20,8 +20,17 @@ class SalesExport implements FromCollection, WithHeadings
 
     public function collection()
     {
-        // Filter sales data based on date range
-        return Sales::whereBetween('sales_date', [$this->startDate, $this->endDate])->get();
+        // Eager load the customer relationship and filter sales data based on date range
+        return Sales::with('customer')->whereBetween('sales_date', [$this->startDate, $this->endDate])->get()
+            ->map(function ($sale) {
+                return [
+                    'ID' => $sale->id,
+                    'Sales Date' => $sale->sales_date,
+                    'Total Price' => $sale->total_price,
+                    'Customer Name' => $sale->customer->cust_name, // Access customer name through the relationship
+                    // Add more fields as needed
+                ];
+            });
     }
 
     public function headings(): array
