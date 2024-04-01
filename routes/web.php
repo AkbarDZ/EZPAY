@@ -1,11 +1,13 @@
 <?php
 
+use App\Exports\SalesExport;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SalesController;
 use App\Http\Middleware\RedirectIfEmployee;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +24,12 @@ use Illuminate\Support\Facades\Route;
 //     return view('pages.product.index');
 // });
 Route::middleware('auth')->group(function () {
+
+    Route::get('/export-sales', function () {
+        $startDate = request()->input('start_date', now()->subMonth());
+        $endDate = request()->input('end_date', now());
+        return Excel::download(new SalesExport($startDate, $endDate), 'sales.xlsx');
+    })->name('export.sales');
 
 Route::get('/products', [ProductController::class, 'index_prod'])->name('product_table');
 Route::get('/products-add', [ProductController::class, 'create_prod'])->name('product_add');

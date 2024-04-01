@@ -26,6 +26,15 @@
             <!-- /.card-header -->
             <a href="" class="btn btn-primary">Add New Sale</a>
             <div class="card-body" style="overflow-x: auto;">
+                <form action="{{ route('export.sales') }}" method="GET">
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date">
+                
+                    <label for="end_date">End Date:</label>
+                    <input type="date" id="end_date" name="end_date">
+                
+                    <button type="submit" class="btn btn-success">Export Sales Data</button>
+                </form>
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -71,6 +80,8 @@
     </div>
     <!-- /.col -->
 </div>
+
+
 
 @endsection
 
