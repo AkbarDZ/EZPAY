@@ -45,8 +45,8 @@
                         value="{{$cust->cust_address}}">
                     </div>
                     <div class="form-group">
-                        <label>Customer Address</label>
-                        <input name="cust_phone" id="cust_phone" autocomplete="off" type="text" class="form-control form-control-border border-width-2"  placeholder="Enter Price"
+                        <label>Customer Phone Number</label>
+                        <input name="cust_phone" id="cust_phone" required autocomplete="off" type="text" class="form-control form-control-border border-width-2"  placeholder="Enter Price"
                         value="{{$cust->cust_phone}}">
                     </div>
                 </div>

@@ -30,17 +30,17 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label>Name</label>
-                        <input name="name" id="name" autocomplete="off" type="text"
+                        <input name="name" id="name" autocomplete="off" type="text" required
                             class="form-control form-control-border border-width-2" placeholder="Enter Name">
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input name="email" id="email" autocomplete="off" type="email"
+                        <input name="email" id="email" autocomplete="off" type="email" required
                             class="form-control form-control-border border-width-2" placeholder="Enter Email">
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input name="password" id="password" autocomplete="off" type="password"
+                        <input name="password" id="password" autocomplete="off" type="password" required minlength="8"
                             class="form-control form-control-border border-width-2" placeholder="Enter Password">
                     </div>
                     <div class="form-group">

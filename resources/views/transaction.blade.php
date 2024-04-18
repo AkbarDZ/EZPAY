@@ -33,7 +33,7 @@
                     <div class="form-group row">
                         <label for="cust_name" class="col-md-4 col-form-label text-md-right">Customer Name</label>
                         <div class="col-md-6">
-                            <input id="cust_name" type="text" class="form-control" name="cust_name" required>
+                            <input id="cust_name" required type="text" class="form-control" name="cust_name" required>
                         </div>
                     </div>
                     <!-- Customer Address -->
@@ -46,7 +46,7 @@
                     <div class="form-group row">
                         <label for="cust_phone" class="col-md-4 col-form-label text-md-right">Customer Phone Number</label>
                         <div class="col-md-6">
-                            <input id="cust_phone" class="form-control" required type="text" name="cust_phone">
+                            <input id="cust_phone" required class="form-control" required type="text" name="cust_phone">
                         </div>
                     </div>
                     <!-- Products and Quantities -->
@@ -165,7 +165,7 @@
             const stockInfo = $(this).closest('.product-field').find('.stock-info');
             const priceInfo = $(this).closest('.product-field').find('.price-info');
             stockInfo.find('#stock').val('Stock : ' + stock);
-            priceInfo.find('#price').val('Price : USD ' + price);
+            priceInfo.find('#price').val('Price : Rp. ' + price);
             stockInfo.show();
             priceInfo.show();
             calculateTotals();

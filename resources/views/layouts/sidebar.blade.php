@@ -3,7 +3,7 @@
     <a href="index3.html" class="brand-link">
         <img src="{{ asset('dist/img/ezpayv2.png') }}" alt="AdminLTE Logo"
             class="brand-image img-circle elevation-3">
-        <span class="brand-text font-weight-light">EZpay</span>
+        <span class="brand-text font-weight-light">EZpay beta</span>
     </a>
 
     <!-- Sidebar -->

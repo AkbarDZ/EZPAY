@@ -43,7 +43,7 @@
                     </div>
                     <div class="form-group">
                         <label>Customer Phone Number</label>
-                        <input name="cust_phone" id="cust_phone" autocomplete="off" type="text" class="form-control form-control-border border-width-2"  placeholder="Enter Number">
+                        <input name="cust_phone" id="cust_phone" required autocomplete="off" type="text" class="form-control form-control-border border-width-2"  placeholder="Enter Number">
                     </div>
                 </div>
                 <!-- /.card-body -->

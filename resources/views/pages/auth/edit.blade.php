@@ -31,15 +31,15 @@
                 <div class="card-body">
                     <div class="form-group">
                         <label>Name</label>
-                        <input name="name" id="name" autocomplete="off" type="text" class="form-control form-control-border border-width-2" value="{{ $user->name }}">
+                        <input name="name" id="name" autocomplete="off" required type="text" class="form-control form-control-border border-width-2" value="{{ $user->name }}">
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input name="email" id="email" autocomplete="off" type="email" class="form-control form-control-border border-width-2" value="{{ $user->email }}">
+                        <input name="email" id="email" autocomplete="off" required type="email" class="form-control form-control-border border-width-2" value="{{ $user->email }}">
                     </div>
                     <div class="form-group">
                         <label>Password</label>
-                        <input name="password" id="password" autocomplete="off" type="password" class="form-control form-control-border border-width-2" placeholder="Enter New Password">
+                        <input name="password" id="password" autocomplete="off" minlength="8" type="password" class="form-control form-control-border border-width-2" placeholder="Enter New Password">
                     </div>
                     <div class="form-group">
                         <label>Role</label>
