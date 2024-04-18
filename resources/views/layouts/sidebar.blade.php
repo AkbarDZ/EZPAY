@@ -44,7 +44,7 @@
                     <a href="{{ url('/') }}" class="nav-link {{ request()->is('/') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
-                            Home
+                            Transaction
                             {{-- <span class="right badge badge-danger">New</span> --}}
                         </p>
                     </a>

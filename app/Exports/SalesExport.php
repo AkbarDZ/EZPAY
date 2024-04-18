@@ -3,11 +3,11 @@
 namespace App\Exports;
 
 use App\Models\Sales;
-use Illuminate\Support\Facades\Input;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class SalesExport implements FromCollection, WithHeadings
+class SalesExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
     protected $startDate;
     protected $endDate;
@@ -24,10 +24,11 @@ class SalesExport implements FromCollection, WithHeadings
         return Sales::with('customer')->whereBetween('sales_date', [$this->startDate, $this->endDate])->get()
             ->map(function ($sale) {
                 return [
-                    'ID' => $sale->id,
-                    'Sales Date' => $sale->sales_date,
-                    'Total Price' => $sale->total_price,
-                    'Customer Name' => $sale->customer->cust_name, // Access customer name through the relationship
+                    $sale->id,
+                    $sale->sales_date, // Format date as desired
+                    number_format($sale->total_price, 2), // Format total price with 2 decimal places
+                    $sale->customer->cust_name, // Access customer name through the relationship
+                    $sale->user->name,
                     // Add more fields as needed
                 ];
             });
@@ -40,7 +41,10 @@ class SalesExport implements FromCollection, WithHeadings
             'Sales Date',
             'Total Price',
             'Customer Name',
+            'Cashier Name',
             // Add more headings as needed
         ];
     }
 }
+
+

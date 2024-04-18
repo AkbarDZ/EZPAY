@@ -40,6 +40,12 @@
                             <input id="cust_address" type="text" class="form-control" name="cust_address" value="{{ $transaction->customer->cust_address }}">
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label for="cust_phone" class="col-md-4 col-form-label text-md-right">Customer Phone Number</label>
+                        <div class="col-md-6">
+                            <input id="cust_phone" type="text" class="form-control" name="cust_phone" value="{{ $transaction->customer->cust_phone }}">
+                        </div>
+                    </div>
                     <!-- Products and Quantities -->
                     <div id="product-form">
                         @foreach($transaction->details as $detail)
@@ -49,16 +55,22 @@
                                 <select class="form-control product" name="products[]" required>
                                     <option value="">Select Product</option>
                                     @foreach($prod as $product)
-                                    <option value="{{ $product->id }}" data-price="{{ $product->price }}" {{ $product->id == $detail->product->id ? 'selected' : '' }}>
+                                    <option value="{{ $product->id }}" data-price="{{ $product->price }}" data-stock="{{ $product->stock }}" {{ $product->id == $detail->product->id ? 'selected' : '' }}>
                                         {{ $product->prod_name }} - {{ $product->price }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <input type="number" class="form-control quantity" name="quantities[]" value="{{ $detail->quantity }}" required>
+                                <input type="number" class="form-control quantity" name="quantities[]" value="{{ $detail->quantity }}" required min="0">
                             </div>
                             <div class="col-md-1">
                                 <button type="button" class="btn btn-danger remove-product">-</button>
+                            </div>
+                            <div class="col-md-6 mt-2 offset-md-4 stock-info">
+                                <input id="stock" type="text" class="form-control" readonly>
+                            </div>
+                            <div class="col-md-6 mt-2 offset-md-4 price-info">
+                                <input id="price" type="text" class="form-control" readonly>
                             </div>
                         </div>
                         @endforeach
@@ -104,43 +116,73 @@
 
 @section('script')
 <script>
-    $(document).ready(function () {
-        const productFields = $('#product-form');
-        const subtotalInput = $('#subtotal');
-        const totalPriceInput = $('#total-price');
-        const grandTotalInput = $('#grand-total');
+    
+$(document).ready(function () {
+    const productFields = $('#product-form');
+    const subtotalInput = $('#subtotal');
+    const totalPriceInput = $('#total-price');
+    const grandTotalInput = $('#grand-total');
 
-        // Function to calculate totals
-        function calculateTotals() {
-            let subtotal = 0;
-            $('.product-field').each(function () {
-                const price = parseFloat($(this).find('.product option:selected').data('price'));
-                const quantity = parseInt($(this).find('.quantity').val());
-                subtotal += price * quantity;
-            });
-            subtotalInput.val(subtotal.toFixed(2));
-            totalPriceInput.val(subtotal.toFixed(2));
-            grandTotalInput.val(subtotal.toFixed(2));
-        }
+    // Function to calculate totals
+    function calculateTotals() {
+        let subtotal = 0;
+        $('.product-field').each(function () {
+            const price = parseFloat($(this).find('.product option:selected').data('price'));
+            const quantity = parseInt($(this).find('.quantity').val());
+            subtotal += price * quantity;
+        });
+        subtotalInput.val(subtotal.toFixed(2));
+        totalPriceInput.val(subtotal.toFixed(2));
+        grandTotalInput.val(subtotal.toFixed(2));
+    }
 
-        // Calculate totals on load
+    // Calculate totals on load
+    calculateTotals();
+
+    // Add product button click event
+    $('#add-product').click(function () {
+        const productField = $('.product-field').first().clone();
+        productField.find('.remove-product').click(function () {
+            $(this).closest('.product-field').remove();
+            calculateTotals();
+        });
+        productField.find('.stock-info').hide(); // Hide stock info for new product
+        productField.find('.price-info').hide(); // Hide price info for new product
+        productFields.append(productField);
         calculateTotals();
-
-        // Add product button click event
-        $('#add-product').click(function () {
-            const productField = $('.product-field').first().clone();
-            productField.find('.remove-product').click(function () {
-                $(this).closest('.product-field').remove();
-                calculateTotals();
-            });
-            productFields.append(productField);
-            calculateTotals();
-        });
-
-        // Product and quantity change event
-        productFields.on('change', '.product, .quantity', function () {
-            calculateTotals();
-        });
     });
+
+    // Function to update price and stock information
+    function updatePriceAndStock(productField) {
+        const selectedOption = productField.find('.product option:selected');
+        const stock = selectedOption.data('stock');
+        const price = selectedOption.data('price');
+        const stockInfo = productField.find('.stock-info');
+        const priceInfo = productField.find('.price-info');
+        stockInfo.find('#stock').val('Stock : ' + stock);
+        priceInfo.find('#price').val('Price : ' + price);
+        stockInfo.show();
+        priceInfo.show();
+    }
+
+    // Product change event
+    productFields.on('change', '.product', function () {
+        const productField = $(this).closest('.product-field');
+        updatePriceAndStock(productField);
+        calculateTotals();
+    });
+
+    // Trigger change event for each product select element on page load
+    $('.product-field').each(function() {
+        const productField = $(this);
+        updatePriceAndStock(productField);
+    });
+
+    // Quantity change event
+    productFields.on('input', '.quantity', function () {
+        calculateTotals();
+    });
+});
+
 </script>
 @endsection

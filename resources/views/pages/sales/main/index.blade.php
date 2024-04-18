@@ -26,22 +26,37 @@
             <!-- /.card-header -->
             <a href="" class="btn btn-primary">Add New Sale</a>
             <div class="card-body" style="overflow-x: auto;">
-                <form action="{{ route('export.sales') }}" method="GET">
-                    <label for="start_date">Start Date:</label>
-                    <input type="date" id="start_date" name="start_date">
-                
-                    <label for="end_date">End Date:</label>
-                    <input type="date" id="end_date" name="end_date">
-                
-                    <button type="submit" class="btn btn-success">Export Sales Data</button>
+                <form action="{{ route('export.sales') }}" method="GET" class="mt-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="start_date">From:</label>
+                                <input type="date" id="start_date" name="start_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="end_date">To:</label>
+                                <input type="date" id="end_date" name="end_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">&nbsp;</label>
+                                <button type="submit" class="btn btn-success btn-block">Export</button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th class="text-center">Number</th>
+                            <th class="text-center">Sales ID</th>
                             <th>Sales Date</th>
                             <th class="text-center">Total Price</th>
                             <th class="text-center">Customer</th>
+                            <th class="text-center">Cashier</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -49,9 +64,11 @@
                         @foreach ($sale as $item)
                         <tr>
                             <td class="text-center align-middle">{{ $loop->iteration }}</td>
+                            <td class="text-center align-middle">{{ $item->id }}</td>
                             <td>{{ $item->sales_date }}</td>
                             <td class="text-center align-middle">{{ $item->total_price }}</td>
                             <td class="text-center align-middle">{{ $item->customer->cust_name }}</td>
+                            <td class="text-center align-middle">{{ $item->user->name }}</td>
                             <td class="text-center align-middle">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-primary">Actions</button>
@@ -66,9 +83,14 @@
                                             @method('DELETE')
                                             <button type="submit" class="dropdown-item text-danger">Delete</button>
                                         </form>
+                                        <div class="dropdown-divider"></div>
+                                        <form method="POST" action="{{ route('generate_invoice', ['id' => $item->id]) }}">
+                                            @csrf
+                                            <button type="submit" class="dropdown-item">Generate Invoice</button>
+                                        </form>
                                     </div>
                                 </div>
-                            </td>
+                            </td>                            
                         </tr>
                         @endforeach
                     </tbody>

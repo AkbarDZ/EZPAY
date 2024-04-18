@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('cust_name');
-            $table->text('cust_address');
+            $table->text('cust_address')->nullable();
+            $table->string('cust_phone');
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });

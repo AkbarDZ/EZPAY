@@ -26,8 +26,8 @@ use Maatwebsite\Excel\Facades\Excel;
 Route::middleware('auth')->group(function () {
 
     Route::get('/export-sales', function () {
-        $startDate = request()->input('start_date', now()->subMonth());
-        $endDate = request()->input('end_date', now());
+        $startDate = request()->input('start_date', now()->subMonth()->format('Y-m-d'));
+        $endDate = request()->input('end_date', now()->format('Y-m-d'));
         return Excel::download(new SalesExport($startDate, $endDate), 'sales.xlsx');
     })->name('export.sales');
 
@@ -54,6 +54,7 @@ Route::post('/store-transaction', [SalesController::class, 'store_transaction'])
 Route::get('/transactions/{id}/edit', [SalesController::class, 'edit_transaction'])->name('transaction_edit');
 Route::put('/transactions/{id}/edit', [SalesController::class, 'update_transaction'])->name('transaction_update');
 Route::delete('/transactions/{id}/delete', [SalesController::class, 'destroy_transaction'])->name('transaction_destroy');
+Route::post('/generate-invoice/{id}', [SalesController::class, 'generateInvoice'])->name('generate_invoice');
 
 });
 

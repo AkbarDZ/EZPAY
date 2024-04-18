@@ -6,8 +6,10 @@ use App\Models\Customers;
 use App\Models\Products;
 use App\Models\Sales;
 use App\Models\Sales_details;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SalesController extends Controller
@@ -52,6 +54,7 @@ class SalesController extends Controller
             'sales_date' => 'required|date',
             'cust_name' => 'required|string',
             'cust_address' => 'nullable|string',
+            'cust_phone' => 'required|string',
             'products' => 'required|array',
             'products.*' => 'exists:products,id', // Ensure each product exists in the database
             'quantities' => 'required|array',
@@ -60,8 +63,13 @@ class SalesController extends Controller
 
         // Find or create the customer
         $customer = Customers::firstOrCreate(
-            ['cust_name' => $validatedData['cust_name']],
-            ['cust_address' => $validatedData['cust_address']]
+            [
+                'cust_name' => $validatedData['cust_name'],
+                'cust_phone' => $validatedData['cust_phone'] // Provide the cust_phone value
+            ],
+            [
+                'cust_address' => $validatedData['cust_address']
+            ]
         );
 
         // Start a database transaction
@@ -71,7 +79,8 @@ class SalesController extends Controller
             // Create the sale
             $sale = new Sales();
             $sale->sales_date = $validatedData['sales_date'];
-            $sale->customer()->associate($customer); // Associate the sale with the customer
+            $sale->customer()->associate($customer);
+            $sale->user_id = Auth::id(); // Assign the ID of the logged-in user
             $sale->save();
 
             // Initialize total price
@@ -131,6 +140,7 @@ class SalesController extends Controller
             'sales_date' => 'required|date',
             'cust_name' => 'required|string',
             'cust_address' => 'nullable|string',
+            'cust_phone' => 'nullable|string',
             'products' => 'required|array',
             'products.*' => 'exists:products,id', // Ensure each product exists in the database
             'quantities' => 'required|array',
@@ -198,6 +208,23 @@ class SalesController extends Controller
         // Redirect back or to a success page
         return redirect('sales')->with('success', 'Sale deleted successfully.');
     }
+
+// invoice thingy
+
+public function generateInvoice(Request $request, $id)
+{
+    $sale = Sales::findOrFail($id);
+
+    // Generate PDF invoice
+    $pdf = PDF::loadView('pages.sales.main.invoice', ['sale' => $sale]);
+
+    // Optionally, you can save the PDF to a file or return it as a download response
+    // For example, to save the PDF to a file:
+    // $pdf->save(storage_path('app/public/invoices/invoice_'.$sale->id.'.pdf'));
+
+    // Or, return the PDF as a download response
+    return $pdf->download('invoice_no_'.$sale->id.'.pdf');
+}
 
 
 }

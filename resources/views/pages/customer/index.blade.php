@@ -29,9 +29,10 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th class="text-center">Number</th>
+                            <th class="text-center">#</th>
                             <th>Customer Name</th>
                             <th class="text-center">Adress</th>
+                            <th class="text-center">Phone</th>
                             <th></th>
 
                         </tr>
@@ -43,6 +44,7 @@
                             <td class="text-center align-middle">{{$loop->iteration}}</td>
                             <td class="align-middle">{{$item->cust_name}}</td>
                             <td class="align-middle">{{$item->cust_address}}</td>
+                            <td class="align-middle">{{$item->cust_phone}}</td>
                             <td class="text-center align-middle">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-primary">Actions</button>

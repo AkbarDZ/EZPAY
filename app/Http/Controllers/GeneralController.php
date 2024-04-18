@@ -13,7 +13,7 @@ class GeneralController extends Controller
 
     public function index_cust()
     {
-        $cust = Customers::where('is_deleted', false)->get();
+        $cust = Customers::where('is_deleted', false)->get()    ;
 
         return view('pages.customer.index', ['cust' => $cust]);
     }
@@ -30,6 +30,7 @@ class GeneralController extends Controller
         $validatedData = $request->validate([
             'cust_name' => 'required|string',
             'cust_address' => 'nullable|string',
+            'cust_phone' => 'nullable|string',
             
         ]);
 
@@ -50,6 +51,7 @@ class GeneralController extends Controller
         $validatedData = $request->validate([
             'cust_name' => 'required|string',
             'cust_address' => 'nullable|string',
+            'cust_phone' => 'nullable|string',
         ]);
 
         $cust = Customers::findOrFail($id);
