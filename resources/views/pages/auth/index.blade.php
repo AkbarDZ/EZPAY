@@ -64,13 +64,7 @@
                                         <span class="sr-only">Toggle Dropdown</span>
                                     </button>
                                     <div class="dropdown-menu" role="menu" style="">
-                                        <a class="dropdown-item text-warning" href="">Edit</a>
-                                        <div class="dropdown-divider"></div>
-                                        <form method="POST" action="" onsubmit="return confirm('Are you sure you want to toggle the deletion status of this product?')">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="submit" class="dropdown-item text-danger">Toggle Delete</button>
-                                        </form>
+                                        <a class="dropdown-item text-warning" href="{{ route('account_edit', ['id' => $user->id]) }}">Edit</a>
                                     </div>
                                 </div>
                             </td>

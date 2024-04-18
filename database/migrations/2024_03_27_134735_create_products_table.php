@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('prod_name');
             $table->longText('prod_img')->nullable();
-            $table->string('unicode')->unique();
+            $table->string('unicode')->unique()->nullable();
             $table->integer('price');
             $table->integer('stock');
             $table->string('sku');

@@ -70,16 +70,36 @@
                                 <p>Customers</p>
                             </a>
                         </li>
-                        @if(Auth::check() && Auth::user()->role !== 'employee')
-                            <li class="nav-item">
-                                <a href="{{ route('account_table') }}" class="nav-link {{ request()->is('register') ? 'active' : '' }}">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Accounts</p>
-                                </a>
-                            </li>
-                        @endif
                     </ul>
                 </li>
+
+                @if(Auth::check() && Auth::user()->role !== 'employee')
+                <li class="nav-item">
+                    <a href="#" class="nav-link {{ request()->is('register','acc-histories') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                            Credential
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('account_table') }}" class="nav-link {{ request()->is('register') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Accounts</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('account_history') }}" class="nav-link {{ request()->is('acc-histories') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Change History</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endif
+
                 <li class="nav-item">
                     <a href="#" class="nav-link {{ request()->is('sales','sales_details') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-table"></i>

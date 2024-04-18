@@ -64,6 +64,10 @@ Route::middleware([RedirectIfEmployee::class])->group(function () {
     Route::get('/register', [AuthController::class, 'index_register'])->name('account_table');
     Route::get('/register-new', [AuthController::class, 'create_register'])->name('account_create');
     Route::post('/register-new', [AuthController::class, 'store_register'])->name('account_store');
+    Route::get('/re-register/{id}', [AuthController::class, 'edit_register'])->name('account_edit');
+    Route::put('/re-register/{id}', [AuthController::class, 'update_register'])->name('account_update');
+
+    Route::get('/acc-histories', [AuthController::class, 'register_history'])->name('account_history');
 });
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');

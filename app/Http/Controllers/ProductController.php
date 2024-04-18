@@ -29,23 +29,30 @@ class ProductController extends Controller
         $prod->stock = $request->input('stock');
         $prod->sku = $request->input('sku');
 
+        // Save the product first to generate the ID
+        $prod->save();
+
         // Generate unicode
         $unicodePrefix = strtoupper(substr($prod->prod_name, 0, 2)); // Get first two characters in uppercase
         $unicodeSuffix = str_pad($prod->id, 4, '0', STR_PAD_LEFT); // Generate four-digit zero-padded ID
         $lastTwoChars = strtoupper(substr($prod->prod_name, -2)); // Get last two characters of the product name
-        $prod->unicode = $unicodePrefix . $lastTwoChars . '-' . $unicodeSuffix;
+        $unicode = $unicodePrefix . $lastTwoChars . '-' . $unicodeSuffix;
+
+        // Update the product with the generated unicode
+        $prod->unicode = $unicode;
+        $prod->save();
 
         // Handle the image
         if ($request->hasFile('prod_img')) {
             $image = $request->file('prod_img');
             $imageData = base64_encode(file_get_contents($image)); // Encode image data to base64
             $prod->prod_img = $imageData; // Store base64 encoded image data in the database
+            $prod->save();
         }
-        
-        $prod->save();
 
         return redirect('products')->with('success', 'Product added');
     }
+
 
     public function edit_prod($id)
     {

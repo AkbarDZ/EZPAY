@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account_history;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,6 +47,13 @@ class AuthController extends Controller
         return view('pages.auth.index', ['user' => $user]);
     }
 
+    public function register_history()
+    {
+        $history = Account_history::all();
+
+        return view('pages.auth.history', ['history' => $history]);
+    }
+
     public function create_register()
     {
         $user = User::all();
@@ -82,8 +90,11 @@ class AuthController extends Controller
             $avatarData = null;
         }
 
+        // Get the ID of the authenticated user who created the new account
+        $creatorId = Auth::id();
+
         // Create the new user with the selected role
-        User::create([
+        $newUser = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
@@ -91,8 +102,76 @@ class AuthController extends Controller
             'avatar' => $avatarData, // Store base64 encoded image data in the database
         ]);
 
+        // Record history entry for user creation
+        Account_history::create([
+            'user_id' => $creatorId, // Record the ID of the authenticated user who created the account
+            'action' => 'created',
+            'new_data' => json_encode($newUser->toArray()), // Convert array to JSON string
+        ]);
+
         return redirect('/register')->with('success', 'Account has been created.');
     }
 
+    public function edit_register($id)
+    {
+        // Fetch the user with the given ID
+        $user = User::findOrFail($id);
+
+        // Return the edit form view with the user data
+        return view('pages.auth.edit',  ['user' => $user]);
+    }
+
+    public function update_register(Request $request, $id)
+    {
+        if (!Auth::check() || Auth::user()->role !== 'admin') {
+            return redirect('/')->with('error', 'You do not have permission to update accounts.');
+        }
+
+        // Fetch the user with the given ID
+        $user = User::findOrFail($id);
+
+        // Validate the update data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'role' => 'required|string|in:admin,employee',
+            'password' => 'nullable|string|min:8', // New password validation
+            // Add other fields validation rules as needed
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        // Get the original data before update
+        $oldData = $user->getOriginal();
+        $creatorId = Auth::id();
+
+        // Update the user details
+        $user->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'role' => $request->input('role'),
+            // Update other fields as needed
+        ]);
+
+        // Update the password if provided
+        $password = $request->input('password');
+        if (!empty($password)) {
+            $user->update([
+                'password' => Hash::make($password),
+            ]);
+        }
+
+        // Create history entry for user update
+        Account_history::create([
+            'user_id' => $creatorId,
+            'action' => 'updated',
+            'old_data' => json_encode($oldData), // Convert array to JSON string
+            'new_data' => json_encode($user->toArray()), // Convert array to JSON string
+        ]);
+
+        return redirect()->route('account_table')->with('success', 'Account has been updated.');
+    }
 
 }
