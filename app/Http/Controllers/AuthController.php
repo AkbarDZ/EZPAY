@@ -103,10 +103,12 @@ class AuthController extends Controller
         ]);
 
         // Record history entry for user creation
+        $newUserData = $newUser->toArray(); // Convert user data to array
+        unset($newUserData['avatar']); // Remove the 'avatar' field from the array
         Account_history::create([
             'user_id' => $creatorId, // Record the ID of the authenticated user who created the account
             'action' => 'created',
-            'new_data' => json_encode($newUser->toArray()), // Convert array to JSON string
+            'new_data' => json_encode($newUserData), // Convert modified array to JSON string
         ]);
 
         return redirect('/register')->with('success', 'Account has been created.');
@@ -122,56 +124,67 @@ class AuthController extends Controller
     }
 
     public function update_register(Request $request, $id)
-    {
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
-            return redirect('/')->with('error', 'You do not have permission to update accounts.');
-        }
-
-        // Fetch the user with the given ID
-        $user = User::findOrFail($id);
-
-        // Validate the update data
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'role' => 'required|string|in:admin,employee',
-            'password' => 'nullable|string|min:8', // New password validation
-            // Add other fields validation rules as needed
-        ]);
-
-        if ($validator->fails()) {
-            return back()->withErrors($validator)->withInput();
-        }
-
-        // Get the original data before update
-        $oldData = $user->getOriginal();
-        $creatorId = Auth::id();
-
-        // Update the user details
-        $user->update([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'role' => $request->input('role'),
-            // Update other fields as needed
-        ]);
-
-        // Update the password if provided
-        $password = $request->input('password');
-        if (!empty($password)) {
-            $user->update([
-                'password' => Hash::make($password),
-            ]);
-        }
-
-        // Create history entry for user update
-        Account_history::create([
-            'user_id' => $creatorId,
-            'action' => 'updated',
-            'old_data' => json_encode($oldData), // Convert array to JSON string
-            'new_data' => json_encode($user->toArray()), // Convert array to JSON string
-        ]);
-
-        return redirect()->route('account_table')->with('success', 'Account has been updated.');
+{
+    if (!Auth::check() || Auth::user()->role !== 'admin') {
+        return redirect('/')->with('error', 'You do not have permission to update accounts.');
     }
+
+    // Fetch the user with the given ID
+    $user = User::findOrFail($id);
+
+    // Validate the update data
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+        'role' => 'required|string|in:admin,employee',
+        'password' => 'nullable|string|min:8', // New password validation
+        'avatar' => 'nullable|file|mimes:jpeg,png,jpg,gif', // Define validation rules for avatar
+        // Add other fields validation rules as needed
+    ]);
+
+    if ($validator->fails()) {
+        return back()->withErrors($validator)->withInput();
+    }
+
+    // Get the original data before update
+    $oldData = $user->getOriginal();
+    $creatorId = Auth::id();
+
+    // Update the user details
+    $user->update([
+        'name' => $request->input('name'),
+        'email' => $request->input('email'),
+        'role' => $request->input('role'),
+        // Update other fields as needed
+    ]);
+
+    // Update the password if provided
+    $password = $request->input('password');
+    if (!empty($password)) {
+        $user->update([
+            'password' => Hash::make($password),
+        ]);
+    }
+
+    // Handle avatar update
+    if ($request->hasFile('avatar')) {
+        $avatar = $request->file('avatar');
+        $avatarData = base64_encode(file_get_contents($avatar)); // Encode image data to base64
+        $user->update([
+            'avatar' => $avatarData,
+        ]);
+    }
+
+    // Create history entry for user update
+    Account_history::create([
+        'user_id' => $creatorId,
+        'action' => 'updated',
+        'old_data' => json_encode($oldData), // Convert array to JSON string
+        'new_data' => json_encode($user->toArray()), // Convert array to JSON string
+    ]);
+
+    return redirect()->route('account_table')->with('success', 'Account has been updated.');
+}
+
 
 }

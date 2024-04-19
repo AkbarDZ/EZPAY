@@ -29,26 +29,57 @@
                                 value="{{ Carbon\Carbon::now()->toDateString() }}" required>
                         </div>
                     </div>
-                    <!-- Customer Name -->
-                    <div class="form-group row">
-                        <label for="cust_name" class="col-md-4 col-form-label text-md-right">Customer Name</label>
-                        <div class="col-md-6">
-                            <input id="cust_name" required type="text" class="form-control" name="cust_name" required>
-                        </div>
-                    </div>
-                    <!-- Customer Address -->
-                    <div class="form-group row">
-                        <label for="cust_address" class="col-md-4 col-form-label text-md-right">Customer Address</label>
-                        <div class="col-md-6">
-                            <input id="cust_address" type="text" class="form-control" name="cust_address">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="cust_phone" class="col-md-4 col-form-label text-md-right">Customer Phone Number</label>
-                        <div class="col-md-6">
-                            <input id="cust_phone" required class="form-control" required type="text" name="cust_phone">
-                        </div>
-                    </div>
+                    <!-- Customer selection -->
+<div class="form-group row">
+    <label for="customer_selection" class="col-md-4 col-form-label text-md-right">Customer Selection</label>
+    <div class="col-md-6">
+        <select id="customer_selection" class="form-control" name="customer_selection">
+            <option value="new">Create New Customer</option>
+            <option value="existing">Use Existing Customer</option>
+        </select>
+    </div>
+</div>
+
+<!-- New Customer Fields -->
+<div id="new_customer_fields">
+    <!-- Customer Name -->
+    <div class="form-group row">
+        <label for="cust_name" class="col-md-4 col-form-label text-md-right">Customer Name</label>
+        <div class="col-md-6">
+            <input id="cust_name" type="text" class="form-control" name="cust_name">
+        </div>
+    </div>
+    <!-- Customer Address -->
+    <div class="form-group row">
+        <label for="cust_address" class="col-md-4 col-form-label text-md-right">Customer Address</label>
+        <div class="col-md-6">
+            <input id="cust_address" type="text" class="form-control" name="cust_address">
+        </div>
+    </div>
+    <!-- Customer Phone Number -->
+    <div class="form-group row">
+        <label for="cust_phone" class="col-md-4 col-form-label text-md-right">Customer Phone Number</label>
+        <div class="col-md-6">
+            <input id="cust_phone" type="text" class="form-control" name="cust_phone">
+        </div>
+    </div>
+</div>
+
+<!-- Existing Customer Fields -->
+<div id="existing_customer_fields" style="display: none;">
+    <!-- Select existing customer -->
+    <div class="form-group row">
+        <label for="existing_customer" class="col-md-4 col-form-label text-md-right">Select Existing Customer</label>
+        <div class="col-md-6">
+            <select id="existing_customer" class="form-control" name="existing_customer">
+                <!-- Populate with existing customers -->
+                @foreach($existingCustomers as $customer)
+                    <option value="{{ $customer->id }}">{{ $customer->cust_name }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+</div>
                     <!-- Products and Quantities -->
                     <div id="product-form">
                         <div class="form-group row product-field">
@@ -120,62 +151,81 @@
 @section('script')
 
 <script>
-    $(document).ready(function () {
-        // $('.js-example-basic-single').select2();
+   $(document).ready(function () {
+    const productFields = $('#product-form');
+    const subtotalInput = $('#subtotal');
+    const totalPriceInput = $('#total-price');
+    const grandTotalInput = $('#grand-total');
 
-        const productFields = $('#product-form');
-        const subtotalInput = $('#subtotal');
-        const totalPriceInput = $('#total-price');
-        const grandTotalInput = $('#grand-total');
+    $('#customer_selection').change(function() {
+    var selection = $(this).val();
+    if (selection === 'new') {
+        $('#new_customer_fields').show();
+        $('#existing_customer_fields').hide();
+    } else if (selection === 'existing') {
+        $('#new_customer_fields').hide();
+        $('#existing_customer_fields').show();
+    }
+});
 
-        // Function to calculate totals
-        function calculateTotals() {
-            let subtotal = 0;
-            $('.product-field').each(function () {
-                const price = parseFloat($(this).find('.product option:selected').data('price'));
-                const quantity = parseInt($(this).find('.quantity').val());
-                subtotal += price * quantity;
-            });
-            subtotalInput.val(subtotal.toFixed(2));
-            totalPriceInput.val(subtotal.toFixed(2));
-            grandTotalInput.val(subtotal.toFixed(2));
-        }
+    // Function to calculate totals
+    function calculateTotals() {
+        let subtotal = 0;
+        $('.product-field').each(function () {
+            const price = parseFloat($(this).find('.product option:selected').data('price'));
+            const quantity = parseInt($(this).find('.quantity').val());
+            subtotal += price * quantity;
+        });
+        subtotalInput.val(subtotal.toFixed(2));
+        totalPriceInput.val(subtotal.toFixed(2));
+        grandTotalInput.val(subtotal.toFixed(2));
+    }
 
-        // Calculate totals on load
+    // Function to initialize Select2 for a product field
+    function initializeSelect2(productField) {
+        productField.find('.product').select2();
+    }
+
+    // Calculate totals on load
+    calculateTotals();
+
+    // Add product button click event
+    $('#add-product').click(function () {
+        const productField = $('.product-field').first().clone();
+        productField.find('.remove-product').click(function () {
+            $(this).closest('.product-field').remove();
+            calculateTotals();
+        });
+        productField.find('.stock-info').hide(); // Hide stock info for new product
+        productField.find('.price-info').hide(); // Hide price info for new product
+        productFields.append(productField);
+
+        // Initialize Select2 for the newly added product field
+        initializeSelect2(productField);
+
         calculateTotals();
-
-        // Add product button click event
-        $('#add-product').click(function () {
-            const productField = $('.product-field').first().clone();
-            productField.find('.remove-product').click(function () {
-                $(this).closest('.product-field').remove();
-                calculateTotals();
-            });
-            productField.find('.stock-info').hide(); // Hide stock info for new product
-            productField.find('.price-info').hide(); // Hide price info for new product
-            productFields.append(productField);
-            calculateTotals();
-        });
-
-        // Product change event
-        productFields.on('change', '.product', function () {
-            const selectedOption = $(this).find(':selected');
-            const stock = selectedOption.data('stock');
-            const price = selectedOption.data('price');
-            const stockInfo = $(this).closest('.product-field').find('.stock-info');
-            const priceInfo = $(this).closest('.product-field').find('.price-info');
-            stockInfo.find('#stock').val('Stock : ' + stock);
-            priceInfo.find('#price').val('Price : Rp. ' + price);
-            stockInfo.show();
-            priceInfo.show();
-            calculateTotals();
-        });
-
-        // Quantity change event
-        productFields.on('input', '.quantity', function () {
-            calculateTotals();
-        });
     });
+
+    // Product change event
+    productFields.on('change', '.product', function () {
+        const selectedOption = $(this).find(':selected');
+        const stock = selectedOption.data('stock');
+        const price = selectedOption.data('price');
+        const stockInfo = $(this).closest('.product-field').find('.stock-info');
+        const priceInfo = $(this).closest('.product-field').find('.price-info');
+        stockInfo.find('#stock').val('Stock : ' + stock);
+        priceInfo.find('#price').val('Price : Rp. ' + price);
+        stockInfo.show();
+        priceInfo.show();
+        calculateTotals();
+    });
+
+    // Quantity change event
+    productFields.on('input', '.quantity', function () {
+        calculateTotals();
+    });
+});
+
 </script>
 
 @endsection

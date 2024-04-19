@@ -76,14 +76,6 @@
                                         <span class="sr-only">Toggle Dropdown</span>
                                     </button>
                                     <div class="dropdown-menu" role="menu" style="">
-                                        <a class="dropdown-item text-warning" href="{{ route('transaction_edit', ['id' => $item->id]) }}">Edit</a>
-                                        <div class="dropdown-divider"></div>
-                                        <form method="POST" action="{{ route('transaction_destroy', ['id' => $item->id]) }}" onsubmit="return confirm('Are you sure you want to delete this sale?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="dropdown-item text-danger">Delete</button>
-                                        </form>
-                                        <div class="dropdown-divider"></div>
                                         <form method="POST" action="{{ route('generate_invoice', ['id' => $item->id]) }}">
                                             @csrf
                                             <button type="submit" class="dropdown-item">Generate Invoice</button>

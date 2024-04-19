@@ -101,7 +101,7 @@
                 @endif
 
                 <li class="nav-item">
-                    <a href="#" class="nav-link {{ request()->is('sales','sales_details') ? 'active' : '' }}">
+                    <a href="#" class="nav-link {{ request()->is('sales','sales_details','total-sales') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-table"></i>
                         <p>
                             Sales
@@ -119,6 +119,12 @@
                             <a href="{{ url('sales_details') }}" class="nav-link {{ request()->is('sales_details') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Sales Details</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url('total-sales') }}" class="nav-link {{ request()->is('total-sales') ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Total Sales per Customer</p>
                             </a>
                         </li>
                     </ul>

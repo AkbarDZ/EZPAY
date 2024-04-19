@@ -55,7 +55,7 @@
                                 @endif
                             </td>
                             <td class="align-middle">{{ $user->email }}</td>
-                            <td class="text-center" style="text-transform: uppercase" class="align-middle">{{ $user->role }}</td>
+                            <td class="text-center align-middle" style="text-transform: uppercase">{{ $user->role }}</td>
                             <td class="text-center align-middle">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-primary">Actions</button>

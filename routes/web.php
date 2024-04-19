@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GeneralController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\TotalSalesController;
 use App\Http\Middleware\RedirectIfEmployee;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
@@ -31,6 +32,9 @@ Route::middleware('auth')->group(function () {
         return Excel::download(new SalesExport($startDate, $endDate), 'sales.xlsx');
     })->name('export.sales');
 
+    Route::get('/total-sales', [TotalSalesController::class, 'showForm'])->name('total_sales_form');
+    Route::post('/total-sales', [TotalSalesController::class, 'getTotalSales'])->name('total_sales');
+
 Route::get('/products', [ProductController::class, 'index_prod'])->name('product_table');
 Route::get('/products-add', [ProductController::class, 'create_prod'])->name('product_add');
 Route::post('/products-add', [ProductController::class, 'store_prod'])->name('product_store');
@@ -52,8 +56,8 @@ Route::get('/sales_details', [SalesController::class, 'index_sales_detail'])->na
 Route::get('/', [SalesController::class, 'create_transaction'])->name('transaction_create');
 Route::post('/store-transaction', [SalesController::class, 'store_transaction'])->name('transaction_store');
 Route::get('/transactions/{id}/edit', [SalesController::class, 'edit_transaction'])->name('transaction_edit');
-Route::put('/transactions/{id}/edit', [SalesController::class, 'update_transaction'])->name('transaction_update');
-Route::delete('/transactions/{id}/delete', [SalesController::class, 'destroy_transaction'])->name('transaction_destroy');
+// Route::put('/transactions/{id}/edit', [SalesController::class, 'update_transaction'])->name('transaction_update');
+// Route::delete('/transactions/{id}/delete', [SalesController::class, 'destroy_transaction'])->name('transaction_destroy');
 Route::post('/generate-invoice/{id}', [SalesController::class, 'generateInvoice'])->name('generate_invoice');
 
 });

@@ -109,7 +109,6 @@ margin-top:20px;
                             <div class="receipt-right">
                                 <h5>{{ $sale->customer->cust_name }}</h5>
                                 <p><b>Mobile :</b> {{ $sale->customer->cust_phone }}</p>
-                                <p><b>Email :</b> {{ $sale->customer->cust_email }}</p>
                                 <p><b>Address :</b> {{ $sale->customer->cust_address }}</p>
                             </div>
                         </div>

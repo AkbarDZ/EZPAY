@@ -1,7 +1,6 @@
 @extends('welcome')
 
 @section('title')
-
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -17,17 +16,14 @@
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 </div>
-
 @endsection
 
 @section('content')
-
 <div class="row">
     <!-- left column -->
     <div class="col-md-12">
         <!-- general form elements -->
         <div class="card card-primary">
-
             <!-- /.card-header -->
             <!-- form start -->
             <form method="POST" action="{{ route('product_store') }}" enctype="multipart/form-data">
@@ -53,14 +49,16 @@
                         <label for="exampleInputFile">File input</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" name="prod_img" class="custom-file-input" id="prod_img">
+                                <input type="file" name="prod_img" class="custom-file-input" id="prod_img" onchange="previewImage(this)">
                                 <label class="custom-file-label">Choose file</label>
                             </div>
+                        </div>
+                        <div class="mt-2">
+                            <img id="img-preview" src="#" alt="Preview Image" style="max-width: 200px; display: none;">
                         </div>
                     </div>
                 </div>
                 <!-- /.card-body -->
-
                 <div class="card-footer">
                     <button type="submit" class="btn btn-primary">Submit</button>
                     <a class="btn btn-primary" href="{{ route('product_table') }}">Cancel</a>
@@ -71,16 +69,22 @@
     <!--/.col (left) -->
     <!-- right column -->
 </div>
-
 @endsection
 
 @section('script')
-
 <script>
-    $(function () {
-        bsCustomFileInput.init();
-    });
-
+    function previewImage(input) {
+        var imgPreview = document.getElementById('img-preview');
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                imgPreview.src = e.target.result;
+                imgPreview.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            imgPreview.style.display = 'none';
+        }
+    }
 </script>
-
 @endsection
