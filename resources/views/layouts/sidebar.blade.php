@@ -42,7 +42,7 @@
                with font-awesome or any other icon font library -->             
                 <li class="nav-item">
                     <a href="{{ url('/') }}" class="nav-link {{ request()->is('/') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-th"></i>
+                        <i class="nav-icon fa-solid fa-cash-register"></i>
                         <p>
                             Transaction
                             {{-- <span class="right badge badge-danger">New</span> --}}
@@ -76,7 +76,7 @@
                 @if(Auth::check() && Auth::user()->role !== 'employee')
                 <li class="nav-item">
                     <a href="#" class="nav-link {{ request()->is('register','acc-histories') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-table"></i>
+                        <i class="nav-icon fa-solid fa-users"></i>
                         <p>
                             Credential
                             <i class="fas fa-angle-left right"></i>
@@ -102,7 +102,7 @@
 
                 <li class="nav-item">
                     <a href="#" class="nav-link {{ request()->is('sales','sales_details','total-sales') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-table"></i>
+                        <i class="nav-icon fa-solid fa-chart-simple"></i>
                         <p>
                             Sales
                             <i class="fas fa-angle-left right"></i>

@@ -1,13 +1,11 @@
 @extends('welcome')
 
 @section('title')
-
 <div class="content-header">
     <div class="container-fluid">
-
+        <!-- Add any title content here if needed -->
     </div><!-- /.container-fluid -->
 </div>
-
 @endsection
 
 @section('content')
@@ -22,7 +20,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4>Total Sales</h4>
-                        <span class="badge badge-success">Rp.{{ $totalSales }}</span>
+                        <span class="badge badge-success">Rp.{{ number_format($totalSales, 0, ',', '.') }}</span>
                     </div>
                     <div class="progress">
                         <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>

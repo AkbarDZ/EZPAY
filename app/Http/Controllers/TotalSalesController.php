@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -9,7 +10,8 @@ class TotalSalesController extends Controller
 {
     public function showForm()
     {
-        return view('pages.sales.details.total-sales');
+        $cust = Customers::all();
+        return view('pages.sales.details.total-sales', compact('cust'));
     }
 
     public function getTotalSales(Request $request)

@@ -66,7 +66,7 @@
                             <td class="text-center align-middle">{{ $loop->iteration }}</td>
                             <td class="text-center align-middle">{{ $item->id }}</td>
                             <td>{{ $item->sales_date }}</td>
-                            <td class="text-center align-middle">{{ $item->total_price }}</td>
+                            <td class="text-center align-middle">Rp {{ number_format($item->total_price, 0, ',', '.') }}</td>
                             <td class="text-center align-middle">{{ $item->customer->cust_name }}</td>
                             <td class="text-center align-middle">{{ $item->user->name }}</td>
                             <td class="text-center align-middle">
@@ -94,8 +94,6 @@
     </div>
     <!-- /.col -->
 </div>
-
-
 
 @endsection
 

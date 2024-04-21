@@ -26,7 +26,7 @@
                         <label for="sales_date" class="col-md-4 col-form-label text-md-right">Sales Date</label>
                         <div class="col-md-6">
                             <input id="sales_date" type="date" class="form-control" name="sales_date"
-                                value="{{ Carbon\Carbon::now()->toDateString() }}" required>
+                                value="{{ Carbon\Carbon::now()->toDateString() }}" required readonly>
                         </div>
                     </div>
                     <!-- Customer selection -->
@@ -71,7 +71,7 @@
     <div class="form-group row">
         <label for="existing_customer" class="col-md-4 col-form-label text-md-right">Select Existing Customer</label>
         <div class="col-md-6">
-            <select id="existing_customer" class="form-control" name="existing_customer">
+            <select id="existing_customer" class="form-control" name="existing_customer" style="width: 100%;">
                 <!-- Populate with existing customers -->
                 @foreach($existingCustomers as $customer)
                     <option value="{{ $customer->id }}">{{ $customer->cust_name }}</option>
@@ -94,7 +94,7 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <input type="number" class="form-control quantity" name="quantities[]" required min="0" value="0">
+                                <input type="number" class="form-control quantity" name="quantities[]" required min="1" value="1">
                             </div>
                             <div class="col-md-1">
                                 <button type="button" class="btn btn-danger remove-product">-</button>
@@ -157,16 +157,19 @@
     const totalPriceInput = $('#total-price');
     const grandTotalInput = $('#grand-total');
 
+    // Initialize Select2 for existing customer selection
+    $('#existing_customer').select2();
+
     $('#customer_selection').change(function() {
-    var selection = $(this).val();
-    if (selection === 'new') {
-        $('#new_customer_fields').show();
-        $('#existing_customer_fields').hide();
-    } else if (selection === 'existing') {
-        $('#new_customer_fields').hide();
-        $('#existing_customer_fields').show();
-    }
-});
+        var selection = $(this).val();
+        if (selection === 'new') {
+            $('#new_customer_fields').show();
+            $('#existing_customer_fields').hide();
+        } else if (selection === 'existing') {
+            $('#new_customer_fields').hide();
+            $('#existing_customer_fields').show();
+        }
+    });
 
     // Function to calculate totals
     function calculateTotals() {
@@ -176,9 +179,9 @@
             const quantity = parseInt($(this).find('.quantity').val());
             subtotal += price * quantity;
         });
-        subtotalInput.val(subtotal.toFixed(2));
-        totalPriceInput.val(subtotal.toFixed(2));
-        grandTotalInput.val(subtotal.toFixed(2));
+        subtotalInput.val(subtotal.toLocaleString('id-ID'));
+        totalPriceInput.val(subtotal.toLocaleString('id-ID'));
+        grandTotalInput.val(subtotal.toLocaleString('id-ID'));
     }
 
     // Function to initialize Select2 for a product field
@@ -214,7 +217,7 @@
         const stockInfo = $(this).closest('.product-field').find('.stock-info');
         const priceInfo = $(this).closest('.product-field').find('.price-info');
         stockInfo.find('#stock').val('Stock : ' + stock);
-        priceInfo.find('#price').val('Price : Rp. ' + price);
+        priceInfo.find('#price').val('Price : Rp. ' + price.toLocaleString('id-ID'));
         stockInfo.show();
         priceInfo.show();
         calculateTotals();
@@ -225,6 +228,7 @@
         calculateTotals();
     });
 });
+
 
 </script>
 

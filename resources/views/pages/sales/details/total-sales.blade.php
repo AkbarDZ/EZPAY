@@ -13,7 +13,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     Total Sales for Customer
@@ -23,8 +23,13 @@
                     <form method="POST" action="{{ route('total_sales') }}">
                         @csrf
                         <div class="form-group">
-                            <label for="customer_id">Customer ID</label>
-                            <input type="number" name="customer_id" id="customer_id" class="form-control" required>
+                            <label>Customer</label>
+                            <select name="customer_id" class="form-control AAA" required>
+                                <option value="">Select Customer</option>
+                                @foreach($cust as $customer)
+                                <option value="{{ $customer->id }}">{{ $customer->cust_name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="start_date">Start Date</label>
@@ -47,4 +52,18 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+
+    <script>
+
+    $(document).ready(function () {
+            $('.AAA').select2();
+
+        });
+        
+    </script>
+    
+
 @endsection

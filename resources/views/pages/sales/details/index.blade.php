@@ -31,6 +31,7 @@
                             <th class="text-center">Number</th>
                             <th class="text-center">Sales Id</th>
                             <th>Product</th>
+                            <th class="text-center">Price</th>
                             <th class="text-center">Quantity</th>
                             <th class="text-center">Subtotal</th>
                         </tr>
@@ -41,8 +42,9 @@
                             <td class="text-center align-middle">{{ $loop->iteration }}</td>
                             <td class="text-center align-middle">{{ $detail->sales_id }}</td>
                             <td>{{ $detail->product->prod_name }}</td>
+                            <td class="text-center align-middle">Rp {{ number_format($detail->product->price, 0, ',', '.') }}</td>
                             <td class="text-center align-middle">{{ $detail->quantity }}</td>
-                            <td class="text-center align-middle">{{ $detail->subtotal }}</td>
+                            <td class="text-center align-middle">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                         </tr>
                         @endforeach
                     </tbody>

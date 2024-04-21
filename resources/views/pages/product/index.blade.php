@@ -59,8 +59,8 @@
 
                                 @endif
                             </td>
-                            <td class="text-center align-middle">{{$item->price}}</td>
-                            <td class="text-center align-middle">{{$item->stock}}</td>
+                            <td class="text-center align-middle">Rp {{ number_format($item->price, 0, ',', '.') }}</td>
+                            <td class="text-center align-middle">{{ number_format($item->stock, 0, ',', '.') }}</td>
                             <td class="text-center align-middle">{{$item->sku}}</td>
                             <td class="text-center align-middle">
                                 <div class="btn-group">
