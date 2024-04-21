@@ -91,38 +91,34 @@ class SalesController extends Controller
             $sale->customer()->associate($customer);
             $sale->user_id = Auth::id(); // Assign the ID of the logged-in user
             $sale->save();
-
+    
             // Initialize total price
             $totalPrice = 0;
-
+    
             // Store sale details (products and quantities)
             foreach ($validatedData['products'] as $key => $product_id) {
                 $quantity = $validatedData['quantities'][$key];
                 $product = Products::findOrFail($product_id);
-
+    
                 // Create the sale detail
                 $saleDetail = new Sales_details();
-                $saleDetail->sales_id = $sale->id; // Associate the sale detail with the sale
-                $saleDetail->product()->associate($product); // Associate the sale detail with the product
+                $saleDetail->sales_id = $sale->id;
+                $saleDetail->product()->associate($product);
                 $saleDetail->quantity = $quantity;
-                $saleDetail->subtotal = $product->price * $quantity; // Calculate subtotal
+                $saleDetail->subtotal = $product->price * $quantity;
                 $saleDetail->save();
-
-                // Deduct the stock of the product
-                $product->stock -= $quantity;
-                $product->save();
-
+    
                 // Accumulate subtotal to calculate total price
                 $totalPrice += $saleDetail->subtotal;
             }
-
+    
             // Assign the total price to the sale object
             $sale->total_price = $totalPrice;
             $sale->save();
-
+    
             // Commit the transaction
             DB::commit();
-
+    
             // Redirect back or to a success page
             return redirect('sales')->with('success', 'Sale created successfully.');
         } catch (\Exception $e) {
