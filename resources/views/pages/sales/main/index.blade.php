@@ -22,9 +22,14 @@
 
 <div class="row">
     <div class="col-12">
+        @if(session('success'))
+            <div id="success-message" class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <div class="card">
             <!-- /.card-header -->
-            <a href="" class="btn btn-primary">Add New Sale</a>
+            <a href="{{ route('transaction_create') }}" class="btn btn-primary">Add New Sale</a>
             <div class="card-body" style="overflow-x: auto;">
                 <form action="{{ route('export.sales') }}" method="GET" class="mt-3">
                     <div class="row">
@@ -47,13 +52,32 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="sales_date_filter">Filter by Sales Date:</label>
+                                <input type="date" id="sales_date_filter" name="sales_date_filter" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="cashier_filter">Filter by Cashier:</label>
+                                <select id="cashier_filter" class="form-control" name="cashier_filter" style="width: 100%;">
+                                    <!-- Populate with existing customers -->
+                                    @foreach($users as $users)
+                                        <option value="{{ $users->name }}">{{ $users->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </form>
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th class="text-center">Number</th>
                             <th class="text-center">Sales ID</th>
-                            <th>Sales Date</th>
+                            <th class="text-center">Sales Date</th>
                             <th class="text-center">Total Price</th>
                             <th class="text-center">Customer</th>
                             <th class="text-center">Cashier</th>
@@ -65,7 +89,7 @@
                         <tr>
                             <td class="text-center align-middle">{{ $loop->iteration }}</td>
                             <td class="text-center align-middle">{{ $item->id }}</td>
-                            <td>{{ $item->sales_date }}</td>
+                            <td class="text-center align-middle">{{ $item->sales_date }}</td>
                             <td class="text-center align-middle">Rp {{ number_format($item->total_price, 0, ',', '.') }}</td>
                             <td class="text-center align-middle">{{ $item->customer->cust_name }}</td>
                             <td class="text-center align-middle">{{ $item->user->name }}</td>
@@ -99,29 +123,38 @@
 
 @section('script')
 <script>
+    setTimeout(function() {
+        $('#success-message').fadeOut('slow');
+    }, 3000);
     $(function () {
         $("#example1").DataTable({
             "responsive": true,
             "lengthChange": false,
             "autoWidth": false,
-            // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
             "columnDefs": [{
-                    "orderable": false,
-                    "targets": 3
-                } // Disable sorting for the third (index 2) column
-            ]
+                "orderable": false,
+                "targets": 3
+            }]
         }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
 
+        // Filtering logic
+        $('#sales_date_filter, #cashier_filter').on('change keyup', function () {
+            var salesDate = $('#sales_date_filter').val();
+            var cashierName = $('#cashier_filter').val().toLowerCase();
+
+            $('#example1 tbody tr').each(function () {
+                var $row = $(this);
+                var rowSalesDate = $row.find('td:eq(2)').text().trim();
+                var rowCashier = $row.find('td:eq(5)').text().trim().toLowerCase();
+
+                if ((salesDate === '' || rowSalesDate === salesDate) &&
+                    (cashierName === '' || rowCashier.includes(cashierName))) {
+                    $row.show();
+                } else {
+                    $row.hide();
+                }
+            });
         });
     });
-
 </script>
 @endsection

@@ -6,6 +6,7 @@ use App\Models\Customers;
 use App\Models\Products;
 use App\Models\Sales;
 use App\Models\Sales_details;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,8 +20,9 @@ class SalesController extends Controller
     public function index_sales()
     {
         $sale = Sales::all();
+        $users = User::all();
 
-        return view('pages.sales.main.index', ['sale' => $sale]);
+        return view('pages.sales.main.index', ['sale' => $sale, 'users' => $users]);
     }
 
 
@@ -29,7 +31,7 @@ class SalesController extends Controller
     public function index_sales_detail()
     {
         $sale_detail = Sales_details::all();
-
+        
         return view('pages.sales.details.index', ['sale_detail' => $sale_detail]);
     }
 
@@ -218,7 +220,16 @@ class SalesController extends Controller
 
 public function generateInvoice(Request $request, $id)
 {
-    $sale = Sales::findOrFail($id);
+    $sale = Sales::with('details.product')->findOrFail($id);
+
+    // Format prices to Rupiah currency for the main sale
+    $sale->total_price = 'Rp. ' . number_format($sale->total_price, 0, ',', '.');
+
+    // Format prices to Rupiah currency for each detail
+    foreach ($sale->details as $detail) {
+        $detail->subtotal = 'Rp. ' . number_format($detail->subtotal, 0, ',', '.');
+        $detail->product->price = 'Rp. ' . number_format($detail->product->price, 0, ',', '.');
+    }
 
     // Generate PDF invoice
     $pdf = PDF::loadView('pages.sales.main.invoice', ['sale' => $sale]);

@@ -22,6 +22,11 @@
 
 <div class="row">
     <div class="col-12">
+        @if(session('success'))
+            <div id="success-message" class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <div class="card">
             <!-- /.card-header -->
             <a href="{{ route('customer_add') }}" class="btn btn-primary">Add New</a>
@@ -34,7 +39,6 @@
                             <th class="text-center">Adress</th>
                             <th class="text-center">Phone</th>
                             <th></th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -80,6 +84,9 @@
 
 @section('script')
 <script>
+    setTimeout(function() {
+        $('#success-message').fadeOut('slow');
+    }, 3000);
     $(function () {
         $("#example1").DataTable({
             "responsive": true,

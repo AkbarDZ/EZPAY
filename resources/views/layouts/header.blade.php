@@ -10,6 +10,14 @@
         <li class="nav-item d-none d-sm-inline-block">
             <a href="{{ url('logout') }}" class="nav-link">Logout</a>
         </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <!-- PHP code to fetch total sales count for today -->
+            <?php
+                $salesCountToday = DB::select('CALL CountSalesToday()');
+                $todaySalesCount = $salesCountToday[0]->today_sales_count;
+            ?>
+            <a href="#" class="nav-link">Total sales today : {{ $todaySalesCount }}</a>
+        </li>
     </ul>
 
     <!-- Right navbar links -->

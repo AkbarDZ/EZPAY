@@ -179,9 +179,9 @@
             const quantity = parseInt($(this).find('.quantity').val());
             subtotal += price * quantity;
         });
-        subtotalInput.val(subtotal.toLocaleString('id-ID'));
-        totalPriceInput.val(subtotal.toLocaleString('id-ID'));
-        grandTotalInput.val(subtotal.toLocaleString('id-ID'));
+        subtotalInput.val(subtotal);
+        totalPriceInput.val(subtotal);
+        grandTotalInput.val(subtotal);
     }
 
     // Function to initialize Select2 for a product field

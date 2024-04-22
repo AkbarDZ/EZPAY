@@ -22,6 +22,11 @@
 
 <div class="row">
     <div class="col-12">
+        @if(session('success'))
+            <div id="success-message" class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <div class="card">
             <!-- /.card-header -->
             <a href="{{ route('account_create') }}" class="btn btn-primary">Add New</a>
@@ -84,6 +89,9 @@
 
 @section('script')
 <script>
+    setTimeout(function() {
+        $('#success-message').fadeOut('slow');
+    }, 3000);
     $(function () {
         $("#userTable").DataTable({
             "responsive": true,
